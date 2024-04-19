@@ -6,6 +6,7 @@ import com.dorot.test.springboot.app.repository.AccountRepository;
 import com.dorot.test.springboot.app.repository.BankRepository;
 import com.dorot.test.springboot.app.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,36 +25,36 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account findById(Long id) {
-        return accountRepository.findById(id);
+        return accountRepository.findById(id).orElseThrow();
     }
 
     @Override
     public int reviewTotalTransfers(Long bankId) {
-        Bank bank = bankRepository.findById(bankId);
+        Bank bank = bankRepository.findById(bankId).orElseThrow();
 
         return bank.getTotalTransfers();
     }
 
     @Override
     public BigDecimal reviewBalance(Long id) {
-        Account account = accountRepository.findById(id);
+        Account account = accountRepository.findById(id).orElseThrow();
 
         return account.getBalance();
     }
 
     @Override
     public void transfer(Long sAccountId, Long dAccountId, BigDecimal amount, Long bankId) {
-        Account sourceAccount = accountRepository.findById(sAccountId);
+        Account sourceAccount = accountRepository.findById(sAccountId).orElseThrow();
         sourceAccount.debit(amount);
-        accountRepository.update(sourceAccount);
+        accountRepository.save(sourceAccount);
 
-        Account destinationAccount = accountRepository.findById(dAccountId);
+        Account destinationAccount = accountRepository.findById(dAccountId).orElseThrow();
         destinationAccount.credit(amount);
-        accountRepository.update(destinationAccount);
+        accountRepository.save(destinationAccount);
 
-        Bank bank = bankRepository.findById(bankId);
+        Bank bank = bankRepository.findById(bankId).orElseThrow();
         int totalTransfers = bank.getTotalTransfers();
         bank.setTotalTransfers(++totalTransfers);
-        bankRepository.update(bank);
+        bankRepository.save(bank);
     }
 }

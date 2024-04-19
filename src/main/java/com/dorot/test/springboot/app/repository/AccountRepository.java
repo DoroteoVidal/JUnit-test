@@ -1,13 +1,13 @@
 package com.dorot.test.springboot.app.repository;
 
 import com.dorot.test.springboot.app.model.Account;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface AccountRepository {
-    List<Account> findAll();
+@Repository
+public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Account findById(Long id);
-
-    void update(Account account);
+    Optional<Account> findByPerson(String person);
 }
