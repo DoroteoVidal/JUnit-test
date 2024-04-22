@@ -13,6 +13,8 @@ public interface AccountService {
 
     Account save(Account account);
 
+    void deleteById(Long id);
+
     int reviewTotalTransfers(Long bankId);
 
     BigDecimal reviewBalance(Long id);
