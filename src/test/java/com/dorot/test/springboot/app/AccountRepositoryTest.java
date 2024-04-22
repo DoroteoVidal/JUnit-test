@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @DataJpaTest
-public class JpaIntegrationTest {
+public class AccountRepositoryTest {
 
     @Autowired
     AccountRepository accountRepository;

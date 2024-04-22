@@ -3,9 +3,15 @@ package com.dorot.test.springboot.app.service;
 import com.dorot.test.springboot.app.model.Account;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface AccountService {
+
+    List<Account> findAll();
+
     Account findById(Long id);
+
+    Account save(Account account);
 
     int reviewTotalTransfers(Long bankId);
 

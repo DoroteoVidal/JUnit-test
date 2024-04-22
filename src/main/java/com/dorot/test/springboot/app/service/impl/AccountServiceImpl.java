@@ -8,8 +8,10 @@ import com.dorot.test.springboot.app.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 //@Service, @Controller, @Repository, son anotaciones que permiten
 // definir una clase/objeto que queremos registrar en el contenedor
@@ -24,11 +26,25 @@ public class AccountServiceImpl implements AccountService {
     private BankRepository bankRepository;
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Account> findAll() {
+        return accountRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Account findById(Long id) {
         return accountRepository.findById(id).orElseThrow();
     }
 
     @Override
+    @Transactional
+    public Account save(Account account) {
+        return accountRepository.save(account);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public int reviewTotalTransfers(Long bankId) {
         Bank bank = bankRepository.findById(bankId).orElseThrow();
 
@@ -36,6 +52,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal reviewBalance(Long id) {
         Account account = accountRepository.findById(id).orElseThrow();
 
@@ -43,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public void transfer(Long sAccountId, Long dAccountId, BigDecimal amount, Long bankId) {
         Account sourceAccount = accountRepository.findById(sAccountId).orElseThrow();
         sourceAccount.debit(amount);
