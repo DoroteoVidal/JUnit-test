@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.*;
 
 //La prueba unitaria levanta la aplicacion en un puerto random en un
 // servidor real para consumir la API
+@Tag("integration_wc")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AccountControllerWebTestClientTest {
@@ -54,7 +55,7 @@ class AccountControllerWebTestClientTest {
         response.put("transfer", dto);
 
         // When
-        client.post().uri("http://localhost:8080/api/accounts/transfer")
+        client.post().uri("/api/accounts/transfer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
                 .exchange()
@@ -87,7 +88,7 @@ class AccountControllerWebTestClientTest {
     void accountDetailTest() throws JsonProcessingException {
         Account account = new Account(1L, "Andres", new BigDecimal("900"));
 
-        client.get().uri("http://localhost:8080/api/accounts/1").exchange()
+        client.get().uri("/api/accounts/1").exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
@@ -99,7 +100,7 @@ class AccountControllerWebTestClientTest {
     @Test
     @Order(3)
     void accountDetailTest2() {
-        client.get().uri("http://localhost:8080/api/accounts/2").exchange()
+        client.get().uri("/api/accounts/2").exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Account.class)
@@ -114,7 +115,7 @@ class AccountControllerWebTestClientTest {
     @Test
     @Order(4)
     void listAccountsTest() {
-        client.get().uri("http://localhost:8080/api/accounts").exchange()
+        client.get().uri("/api/accounts").exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
@@ -131,7 +132,7 @@ class AccountControllerWebTestClientTest {
     @Test
     @Order(5)
     void listAccountsTest2() {
-        client.get().uri("http://localhost:8080/api/accounts").exchange()
+        client.get().uri("/api/accounts").exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBodyList(Account.class)
@@ -157,7 +158,7 @@ class AccountControllerWebTestClientTest {
         Account account = new Account(null, "Pepe", new BigDecimal("3000"));
 
         // When
-        client.post().uri("http://localhost:8080/api/accounts")
+        client.post().uri("/api/accounts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(account)
                 .exchange()
@@ -179,7 +180,7 @@ class AccountControllerWebTestClientTest {
         Account account = new Account(null, "Pepa", new BigDecimal("3500"));
 
         // When
-        client.post().uri("http://localhost:8080/api/accounts")
+        client.post().uri("/api/accounts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(account)
                 .exchange()
@@ -199,23 +200,23 @@ class AccountControllerWebTestClientTest {
     @Test
     @Order(8)
     void deleteAccountTest() {
-        client.get().uri("http://localhost:8080/api/accounts")
+        client.get().uri("/api/accounts")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBodyList(Account.class)
                 .hasSize(4);
-        client.delete().uri("http://localhost:8080/api/accounts/3")
+        client.delete().uri("/api/accounts/3")
                 .exchange()
                 .expectStatus().isNoContent()
                 .expectBody().isEmpty();
-        client.get().uri("http://localhost:8080/api/accounts")
+        client.get().uri("/api/accounts")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBodyList(Account.class)
                 .hasSize(3);
-        client.get().uri("http://localhost:8080/api/accounts/3").exchange()
+        client.get().uri("/api/accounts/3").exchange()
                 //.expectStatus().is5xxServerError();
                 .expectStatus().isNotFound()
                 .expectBody().isEmpty();
